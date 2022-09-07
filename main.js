@@ -4,6 +4,23 @@ const ctx1 = screen1.getContext('2d');
 const game1 = new Game(ctx1);
 let gameover = false;
 
+document.addEventListener("keypress", (e) => {
+    switch (e.code) {
+        case "KeyD":
+            game1.movePieceRight();
+            break;
+        case "KeyA":
+            game1.movePieceLeft();
+            break;
+        case "KeyE":
+            game1.rotatePieceClockwise();
+            break;
+        case "KeyQ":
+            game1.rotatePieceCounterClockwise();
+            break;
+    }
+})
+
 async function mainloop() {
     while (!game1.gameOver) {
         game1.spawnPiece();

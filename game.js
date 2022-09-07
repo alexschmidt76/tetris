@@ -185,7 +185,27 @@ class Game {
             }
         }
         // reverse every row in shape array
-        shape.map( row => row.reverse());
+        shape = shape.map( row => row.reverse());
+        this.currentPiece.shape = shape;
+
+        this.showSelf();
+    }
+
+    rotatePieceCounterClockwise() {
+        let shape = this.currentPiece.shape;
+        // clockwise three times
+        for (let i = 0; i < 3; i++) {
+            // transpose shape array
+            for (let i = 0; i < shape.length; i++) {
+                for (let j = 0; j < i; j++) {
+                const temp = shape[i][j];
+                shape[i][j] = shape[j][i];
+                shape[j][i] = temp;
+                }
+            }
+            // reverse every row in shape array
+            shape = shape.map( row => row.reverse());
+        }
         this.currentPiece.shape = shape;
 
         this.showSelf();
