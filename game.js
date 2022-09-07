@@ -2,7 +2,14 @@ class Game {
     constructor(ctx) {
         this.ctx = ctx;
         this.currentPiece = null;
-        this.grid = Array(ROWS).fill(Array(COLS).fill(Number(0)));
+        this.grid = [];
+        for (let i = 0; i < ROWS; i++) {
+            let row = [];
+            for (let j = 0; j < COLS; j++) {
+                row.push(0);
+            }
+            this.grid.push(row);
+        }
     }
 
     showSelf() {
@@ -30,21 +37,23 @@ class Game {
         const shape = this.currentPiece.shape;
         for (let i = 0; i < shape.length; i++) {
             for (let j = 0; j < shape.length; j++) {
-                // p and q are locations of each tile in piece
-                let p = x + i;
-                let q = y + j;
-                // check for in bounds (q can never be less than zero)
-                if (p >= 0 && p < COLS && q < ROWS) {
-                    // check tile for piece
-                    if (this.grid[q][p] != 0) {
-                        console.log('piece hit at ' + p + ' ' + q)
-                        console.log(this.grid);
+                if (shape[i][j] != 0) {
+                    // p and q are locations of each tile in piece
+                    let p = x + j;
+                    let q = y + i;
+                    // check for in bounds (q can never be less than zero)
+                    if (p >= 0 && p < COLS && q < ROWS) {
+                        // check tile for piece
+                        if (this.grid[q][p] != 0) {
+                            console.log('piece hit at ' + p + ' ' + q)
+                            console.log(this.grid);
+                            return true;
+                        }
+                    } else {
+                        // return true for hitting the walls or floor
+                        console.log('floor hit')
                         return true;
                     }
-                } else {
-                    // return true for hitting the walls or floor
-                    console.log('floor hit')
-                    return true;
                 }
             }
         }
@@ -103,12 +112,13 @@ class Game {
             this.currentPiece.shape.forEach( (row, i) => row.forEach( (tile, j) => {
                 console.log(i, j, tile)
                 if (tile != 0) {
-                    debugger
+                    //debugger
+                    //console.log(this.grid[this.currentPiece.y + i][this.currentPiece.x + j])
                     this.grid[this.currentPiece.y + i][this.currentPiece.x + j] = tile;
-                    debugger
+                    //debugger
                 }
             }));
-            // clear curren piece
+            // clear current piece
             this.currentPiece = null;
         }
     }
