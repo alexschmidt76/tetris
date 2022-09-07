@@ -133,12 +133,14 @@ class Game {
                 row[8] != 0 &&
                 row[9] != 0) {
                     linesCleared++;
+                    console.log(linesCleared)
                     // if there are no zeros, make the rows above "fall" onto the others, deleting the full row
-                    for (let c = i; c <= 0; c--) {
-                        if (c == 0) {
+                    for (let c = i; c >= BUFFER_ZONE; c--) {
+                        if (c == BUFFER_ZONE) {
                             this.grid[c] = this.grid[c].map( tile => tile = 0 );
                         } else {
-                            this.grid[c] = this.grid[c].map( (tile, j) => tile = this.grid[c][j] );
+                            console.log('line cleared')
+                            this.grid[c] = this.grid[c].map( (tile, j) => tile = this.grid[c - 1][j] );
                         }
                     }
                 }
@@ -169,6 +171,10 @@ class Game {
                     this.grid[this.currentPiece.y + i][this.currentPiece.x + j] = tile;
                 }
             }));
+            
+            // look for clearable rows
+            this.score += this.clearFullRows();
+
             // clear current piece
             this.currentPiece = null;
         }
