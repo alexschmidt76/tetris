@@ -2,7 +2,7 @@ class Game {
     constructor(ctx) {
         this.ctx = ctx;
         this.currentPiece = null;
-        // initialize next piece
+        this.heldPiece = null;
         this.nextPiece = new Piece(SHAPES[Math.floor(Math.random() * SHAPES.length)], this.ctx);
         this.gameOver = false;
         this.score = 0;
@@ -72,15 +72,26 @@ class Game {
         this.showGridLines();
     }
 
-    getRandomShape() {
-        return SHAPES[Math.floor(Math.random() * SHAPES.length)];
-    }
-
     spawnPiece() {
         this.currentPiece = this.nextPiece;
         // get random shape for next piece
         let shape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
         this.nextPiece = new Piece(shape, this.ctx);
+    }
+
+    holdPiece() {
+        if (this.heldPiece == null) {
+            this.heldPiece = this.currentPiece;
+            this.currentPiece = this.nextPiece;
+            let shape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+            this.nextPiece = new Piece(shape, this.ctx);
+        } else {
+            let temp = this.heldPiece;
+            this.heldPiece = this.currentPiece;
+            temp.x = this.currentPiece.x;
+            temp.y = this.currentPiece.y;
+            this.currentPiece = temp;
+        }
     }
 
     // return true if collision occurs

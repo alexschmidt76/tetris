@@ -18,6 +18,9 @@ document.addEventListener("keypress", (e) => {
         case "KeyQ":
             game1.rotatePieceCounterClockwise();
             break;
+        case "KeyF":
+            game1.holdPiece();
+            break;
     }
 })
 
