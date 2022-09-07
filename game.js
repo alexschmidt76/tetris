@@ -33,7 +33,6 @@ class Game {
                 // p and q are locations of each tile in piece
                 let p = x + i;
                 let q = y + j;
-                console.log(this.grid[p][q]);
                 // check for in bounds (q can never be less than zero)
                 if (p >= 0 && p < COLS && q < ROWS) {
                     // check tile for piece
@@ -97,16 +96,18 @@ class Game {
     movePieceDown() {
         if (!this.detectCollision(this.currentPiece.x, this.currentPiece.y + 1)) {
             // move down if no collision
+            console.log(this.grid)
             this.currentPiece.y++;
         } else {
             // set piece on grid if it collides with floor
-            console.log(this.currentPiece.x, this.currentPiece.y);
             this.currentPiece.shape.forEach( (row, i) => row.forEach( (tile, j) => {
+                console.log(i, j, tile)
                 if (tile != 0) {
+                    debugger
                     this.grid[this.currentPiece.y + i][this.currentPiece.x + j] = tile;
+                    debugger
                 }
             }));
-            console.log(this.grid)
             // clear curren piece
             this.currentPiece = null;
         }

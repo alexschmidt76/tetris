@@ -5,7 +5,6 @@ const game1 = new Game(ctx1);
 let gameover = false;
 
 async function mainloop() {
-    //for (let i = 0; i < 2; i++) { 
         game1.spawnPiece();
         while (game1.currentPiece != null) {
             game1.showSelf();
@@ -13,7 +12,6 @@ async function mainloop() {
             await sleep(200);
         }
         game1.showSelf();
-    //}
 }
 
 mainloop();
