@@ -8,12 +8,9 @@ class Piece  {
     }
 
     showSelf() {
-        console.log(this.shape)
         this.shape.forEach( (row, i) => row.forEach( (tile, j) => {
             if (tile != 0) {
                 drawRect(this.ctx, (this.x + j) * BLOCK_SIZE, (this.y + i) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, COLORS[tile]);
-                console.log(`colored piece tile [${this.y + i}][${this.x + j}] ${COLORS[tile]}`);
-                console.log((this.x + j) * BLOCK_SIZE, (this.y + i) * BLOCK_SIZE, BLOCK_SIZE)
             } 
         }))
     }

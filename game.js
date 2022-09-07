@@ -2,14 +2,14 @@ class Game {
     constructor(ctx) {
         this.ctx = ctx;
         this.currentPiece = null;
-        this.grid = Array(ROWS).fill(Array(COLS).fill(0));
+        this.grid = Array(ROWS).fill(Array(COLS).fill(Number(0)));
     }
 
     showSelf() {
         // show set pieces and black background tiles
         this.grid.forEach( (row, i) => row.forEach( (tile, j) => {
             drawRect(this.ctx, j * BLOCK_SIZE, i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, COLORS[tile]);
-            console.log(`colored tile [${i}][${j}] ${COLORS[tile]}`);
+            //console.log(COLORS[tile])
         }));
 
         // show current piece
@@ -33,19 +33,24 @@ class Game {
                 // p and q are locations of each tile in piece
                 let p = x + i;
                 let q = y + j;
+                console.log(this.grid[p][q]);
                 // check for in bounds (q can never be less than zero)
                 if (p >= 0 && p < COLS && q < ROWS) {
                     // check tile for piece
-                    if (this.grid[p][q] != 0) {
+                    if (this.grid[q][p] != 0) {
+                        console.log('piece hit at ' + p + ' ' + q)
+                        console.log(this.grid);
                         return true;
                     }
                 } else {
                     // return true for hitting the walls or floor
+                    console.log('floor hit')
                     return true;
                 }
             }
         }
         // no collision occurs
+        console.log('no collision');
         return false;
     }
 
@@ -95,11 +100,13 @@ class Game {
             this.currentPiece.y++;
         } else {
             // set piece on grid if it collides with floor
-            this.currentPiece.forEach( (row, i) => row.forEach( (tile, j) => {
+            console.log(this.currentPiece.x, this.currentPiece.y);
+            this.currentPiece.shape.forEach( (row, i) => row.forEach( (tile, j) => {
                 if (tile != 0) {
-                    this.grid[y + i][x + j] = tile;
+                    this.grid[this.currentPiece.y + i][this.currentPiece.x + j] = tile;
                 }
             }));
+            console.log(this.grid)
             // clear curren piece
             this.currentPiece = null;
         }
@@ -118,5 +125,21 @@ class Game {
         // reverse every row in shape array
         shape.map( row => row.reverse());
         this.currentPiece.shape = shape;
+
+        this.showSelf();
+    }
+
+    movePieceRight() {
+        if (!this.detectCollision(this.currentPiece.x + 1, this.currentPiece.y)) {
+            this.currentPiece.x++;
+        }
+        this.showSelf();
+    }
+
+    movePieceLeft() {
+        if (!this.detectCollision(this.currentPiece.x - 1, this.currentPiece.y)) {
+            this.currentPiece.x--;
+        }
+        this.showSelf();
     }
 }

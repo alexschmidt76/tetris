@@ -5,15 +5,15 @@ const game1 = new Game(ctx1);
 let gameover = false;
 
 async function mainloop() {
-    game1.spawnPiece();
-    while (game1.currentPiece != null) {
-        game1.showSelf();
-        game1.movePieceDown();
-        if (game1.detectCollision(game1.currentPiece.x, game1.currentPiece.y + 1)) {
-            game1.currentPiece = null;
+    //for (let i = 0; i < 2; i++) { 
+        game1.spawnPiece();
+        while (game1.currentPiece != null) {
+            game1.showSelf();
+            game1.movePieceDown();
+            await sleep(200);
         }
-        await sleep(1000);
-    }
+        game1.showSelf();
+    //}
 }
 
 mainloop();
