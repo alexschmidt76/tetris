@@ -2,6 +2,8 @@ class Game {
     constructor(ctx) {
         this.ctx = ctx;
         this.currentPiece = null;
+        // initialize next piece
+        this.nextPiece = new Piece(SHAPES[Math.floor(Math.random() * SHAPES.length)], this.ctx);
         this.gameOver = false;
         this.score = 0;
         // build grid
@@ -34,10 +36,15 @@ class Game {
         this.showUI();
     }
 
+    getRandomShape() {
+        return SHAPES[Math.floor(Math.random() * SHAPES.length)];
+    }
+
     spawnPiece() {
-        // get random shape
+        this.currentPiece = this.nextPiece;
+        // get random shape for next piece
         let shape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-        this.currentPiece = new Piece(shape, this.ctx);
+        this.nextPiece = new Piece(shape, this.ctx);
     }
 
     // return true if collision occurs
