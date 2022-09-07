@@ -17,8 +17,41 @@ class Game {
         }
     }
 
+    // used for styling remove when game complete
+    showGridLines() {
+        this.grid.forEach( (row, i) => {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, i * BLOCK_SIZE);
+            this.ctx.lineTo(COLS * BLOCK_SIZE, i * BLOCK_SIZE);
+            this.ctx.stroke();
+            if (i == 0) {
+                row.forEach( (col, j) => {
+                    this.ctx.beginPath();
+                this.ctx.moveTo(j * BLOCK_SIZE, 0);
+                this.ctx.lineTo(j * BLOCK_SIZE, (ROWS + BUFFER_ZONE) * BLOCK_SIZE);
+                this.ctx.stroke();
+                })
+            }
+        });
+    }
+
     showUI() {
-        drawRect(this.ctx, 0, 0, COLS * BLOCK_SIZE, BUFFER_ZONE * BLOCK_SIZE, '#a6a6a6')
+        // background
+        drawRect(this.ctx, 0, 0, COLS * BLOCK_SIZE, BUFFER_ZONE * BLOCK_SIZE, '#a6a6a6');
+
+        // next piece container
+        drawRect(this.ctx, (BLOCK_SIZE * 7) + 18, BLOCK_SIZE + 18, 72, 72, COLORS[0]);
+        // next piece
+        if (this.currentPiece != null) {
+            let x = (BLOCK_SIZE * 8);
+            let y = (BLOCK_SIZE * 2);
+            const MINI_BLOCK_SIZE = BLOCK_SIZE / this.nextPiece.shape.length;
+            this.nextPiece.shape.forEach( (row, i) => row.forEach( (tile, j) => {
+                if (tile != 0) {
+                    drawRect(this.ctx, x + j * MINI_BLOCK_SIZE, y + i * MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, COLORS[tile]);
+                }
+            }));
+        }
     }
 
     showSelf() {
@@ -34,6 +67,9 @@ class Game {
 
         // show ui
         this.showUI();
+
+        // show grid lines
+        this.showGridLines();
     }
 
     getRandomShape() {
@@ -63,7 +99,6 @@ class Game {
                         // check tile for piece
                         if (this.grid[q][p] != 0) {
                             console.log('piece hit at ' + p + ' ' + q)
-                            console.log(this.grid);
                             if (q <= BUFFER_ZONE) {
                                 console.log('game over')
                                 this.gameOver = true;
