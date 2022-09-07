@@ -2,8 +2,11 @@ class Game {
     constructor(ctx) {
         this.ctx = ctx;
         this.currentPiece = null;
+        this.gameOver = false;
+        this.score = 0;
+        // build grid
         this.grid = [];
-        for (let i = 0; i < ROWS; i++) {
+        for (let i = 0; i < ROWS + BUFFER_ZONE; i++) {
             let row = [];
             for (let j = 0; j < COLS; j++) {
                 row.push(0);
@@ -12,17 +15,23 @@ class Game {
         }
     }
 
+    showUI() {
+        drawRect(this.ctx, 0, 0, COLS * BLOCK_SIZE, BUFFER_ZONE * BLOCK_SIZE, '#a6a6a6')
+    }
+
     showSelf() {
         // show set pieces and black background tiles
         this.grid.forEach( (row, i) => row.forEach( (tile, j) => {
-            drawRect(this.ctx, j * BLOCK_SIZE, i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, COLORS[tile]);
-            //console.log(COLORS[tile])
+                drawRect(this.ctx, j * BLOCK_SIZE, (i) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, COLORS[tile]);
         }));
 
         // show current piece
         if (this.currentPiece != null) {
             this.currentPiece.showSelf();
         }
+
+        // show ui
+        this.showUI();
     }
 
     spawnPiece() {
@@ -37,16 +46,21 @@ class Game {
         const shape = this.currentPiece.shape;
         for (let i = 0; i < shape.length; i++) {
             for (let j = 0; j < shape.length; j++) {
+                // dont check empty tiles
                 if (shape[i][j] != 0) {
                     // p and q are locations of each tile in piece
                     let p = x + j;
                     let q = y + i;
                     // check for in bounds (q can never be less than zero)
-                    if (p >= 0 && p < COLS && q < ROWS) {
+                    if (p >= 0 && p < COLS && q < ROWS + BUFFER_ZONE) {
                         // check tile for piece
                         if (this.grid[q][p] != 0) {
                             console.log('piece hit at ' + p + ' ' + q)
                             console.log(this.grid);
+                            if (q <= BUFFER_ZONE) {
+                                console.log('game over')
+                                this.gameOver = true;
+                            }
                             return true;
                         }
                     } else {
@@ -105,17 +119,12 @@ class Game {
     movePieceDown() {
         if (!this.detectCollision(this.currentPiece.x, this.currentPiece.y + 1)) {
             // move down if no collision
-            console.log(this.grid)
             this.currentPiece.y++;
         } else {
             // set piece on grid if it collides with floor
             this.currentPiece.shape.forEach( (row, i) => row.forEach( (tile, j) => {
-                console.log(i, j, tile)
                 if (tile != 0) {
-                    //debugger
-                    //console.log(this.grid[this.currentPiece.y + i][this.currentPiece.x + j])
                     this.grid[this.currentPiece.y + i][this.currentPiece.x + j] = tile;
-                    //debugger
                 }
             }));
             // clear current piece

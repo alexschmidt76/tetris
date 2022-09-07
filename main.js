@@ -5,12 +5,13 @@ const game1 = new Game(ctx1);
 let gameover = false;
 
 async function mainloop() {
-    for (let i = 0; i < 5; i++) {
+    while (!game1.gameOver) {
+        console.log(game1.gameOver)
         game1.spawnPiece();
         while (game1.currentPiece != null) {
             game1.showSelf();
             game1.movePieceDown();
-            await sleep(200);
+            await sleep(50);
         }
         game1.showSelf();
     }

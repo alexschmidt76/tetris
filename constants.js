@@ -1,6 +1,7 @@
 // grid for blocks
 const BLOCK_SIZE = 35;
 const ROWS = 20; // height is 700
+const BUFFER_ZONE = 4;
 const COLS = 10; // width is 350
 
 // game constants
