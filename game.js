@@ -43,10 +43,24 @@ class Game {
         drawRect(this.ctx, (BLOCK_SIZE * 7) + 18, BLOCK_SIZE + 18, 72, 72, COLORS[0]);
         // next piece
         if (this.currentPiece != null) {
-            let x = (BLOCK_SIZE * 8);
-            let y = (BLOCK_SIZE * 2);
+            let x = BLOCK_SIZE * 8;
+            let y = BLOCK_SIZE * 2;
             const MINI_BLOCK_SIZE = BLOCK_SIZE / this.nextPiece.shape.length;
             this.nextPiece.shape.forEach( (row, i) => row.forEach( (tile, j) => {
+                if (tile != 0) {
+                    drawRect(this.ctx, x + j * MINI_BLOCK_SIZE, y + i * MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, COLORS[tile]);
+                }
+            }));
+        }
+
+        // held piece container
+        drawRect(this.ctx, 18, BLOCK_SIZE + 18, 72, 72, COLORS[0]);
+        // held piece
+        if (this.heldPiece != null) {
+            let x = BLOCK_SIZE;
+            let y = BLOCK_SIZE * 2;
+            const MINI_BLOCK_SIZE = BLOCK_SIZE / this.heldPiece.shape.length;
+            this.heldPiece.shape.forEach( (row, i) => row.forEach( (tile, j) => {
                 if (tile != 0) {
                     drawRect(this.ctx, x + j * MINI_BLOCK_SIZE, y + i * MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, COLORS[tile]);
                 }
