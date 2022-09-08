@@ -6,6 +6,8 @@ class Game {
         this.nextPiece = new Piece(SHAPES[Math.floor(Math.random() * SHAPES.length)], this.ctx);
         this.gameOver = false;
         this.score = 0;
+        this.totalLinesCleard = 0;
+
         // build grid
         this.grid = [];
         for (let i = 0; i < ROWS + BUFFER_ZONE; i++) {
@@ -110,8 +112,7 @@ class Game {
 
     // return true if collision occurs
     // x and y are pos of piece at location of possible collision
-    detectCollision(x, y) {
-        const shape = this.currentPiece.shape;
+    detectCollision(x, y, shape) {
         for (let i = 0; i < shape.length; i++) {
             for (let j = 0; j < shape.length; j++) {
                 // dont check empty tiles
@@ -170,6 +171,9 @@ class Game {
                     }
                 }
         });
+
+        this.totalLinesCleard += linesCleared;
+
         // calculate score of move
         switch (linesCleared) {
             case 0:
@@ -185,8 +189,25 @@ class Game {
         }
     }
 
+    calcSpeed() {
+    /*
+        50 100 200 300 400 550 700 850 1000
+       100  90  75  60  45  30  20  10    0
+    */
+        switch (this.totalLinesCleard) {
+            case 0:
+                return 1000;
+        }
+
+
+
+        if (this.totalLinesCleard >= 10) {
+            return 0;
+        }
+    }
+
     movePieceDown() {
-        if (!this.detectCollision(this.currentPiece.x, this.currentPiece.y + 1)) {
+        if (!this.detectCollision(this.currentPiece.x, this.currentPiece.y + 1, this.currentPiece.shape)) {
             // move down if no collision
             this.currentPiece.y++;
         } else {
@@ -205,27 +226,13 @@ class Game {
         }
     }
 
-    rotatePieceClockwise() {
-        let shape = this.currentPiece.shape;
-        // transpose shape array
-        for (let i = 0; i < shape.length; i++) {
-            for (let j = 0; j < i; j++) {
-               const temp = shape[i][j];
-               shape[i][j] = shape[j][i];
-               shape[j][i] = temp;
-            }
-        }
-        // reverse every row in shape array
-        shape = shape.map( row => row.reverse());
-        this.currentPiece.shape = shape;
+    rotatePiece(clockwise=true) {
 
-        this.showSelf();
-    }
-
-    rotatePieceCounterClockwise() {
-        let shape = this.currentPiece.shape;
-        // clockwise three times
-        for (let i = 0; i < 3; i++) {
+        // rotate shape array
+        let shape = this.currentPiece.shape.map( x => x);
+        
+        let s = clockwise ? 1 : 3;
+        while (s > 0) {
             // transpose shape array
             for (let i = 0; i < shape.length; i++) {
                 for (let j = 0; j < i; j++) {
@@ -236,21 +243,50 @@ class Game {
             }
             // reverse every row in shape array
             shape = shape.map( row => row.reverse());
+
+            s--;
         }
-        this.currentPiece.shape = shape;
+
+        // check collisions
+        if (this.detectCollision(this.currentPiece.x, this.currentPiece.y, shape)) {
+            // for loop checks for bottom corner cases 
+            for (let i = 0; i > -2; i--) {
+                // check floor collision
+                if (i != 0 && !this.detectCollision(this.currentPiece.x, this.currentPiece.y + i, shape)) {
+                    this.currentPiece.y + i;
+                    this.currentPiece.shape = shape;
+
+                // check for left collision
+                } else if (!this.detectCollision(this.currentPiece.x + 1, this.currentPiece.y + i, shape)) {
+                    // move piece right and rotate
+                    this.currentPiece.x++;
+                    this.currentPiece.shape = shape;
+
+                // check for right collision
+                } else if (!this.detectCollision(this.currentPiece.x - 1, this.currentPiece.y + i, shape)) {
+                    // move piece left and rotate
+                    this.currentPiece.x--;
+                    this.currentPiece.shape = shape;
+                }
+            }
+
+        // no collisoin
+        } else {
+            this.currentPiece.shape = shape;
+        }
 
         this.showSelf();
     }
 
     movePieceRight() {
-        if (!this.detectCollision(this.currentPiece.x + 1, this.currentPiece.y)) {
+        if (!this.detectCollision(this.currentPiece.x + 1, this.currentPiece.y, this.currentPiece.shape)) {
             this.currentPiece.x++;
         }
         this.showSelf();
     }
 
     movePieceLeft() {
-        if (!this.detectCollision(this.currentPiece.x - 1, this.currentPiece.y)) {
+        if (!this.detectCollision(this.currentPiece.x - 1, this.currentPiece.y, this.currentPiece.shape)) {
             this.currentPiece.x--;
         }
         this.showSelf();

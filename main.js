@@ -12,11 +12,12 @@ document.addEventListener("keypress", (e) => {
         case "KeyA":
             game1.movePieceLeft();
             break;
+            break;
         case "KeyE":
-            game1.rotatePieceClockwise();
+            game1.rotatePiece(true);
             break;
         case "KeyQ":
-            game1.rotatePieceCounterClockwise();
+            game1.rotatePiece(false);
             break;
         case "KeyF":
             game1.holdPiece();
@@ -30,7 +31,7 @@ async function mainloop() {
         while (game1.currentPiece != null) {
             game1.showSelf();
             game1.movePieceDown();
-            await sleep(200);
+            await sleep(game1.calcSpeed());
         }
         game1.showSelf();
     }

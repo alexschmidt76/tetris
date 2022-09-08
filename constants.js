@@ -5,10 +5,7 @@ const BUFFER_ZONE = 4;
 const COLS = 10; // width is 350
 
 // game constants
-const CLOCK = 1000;
 const REWARD = 10;
-
-//
 
 // shapes of pieces in array form
 const SHAPES = [
