@@ -68,12 +68,23 @@ class Game {
                 }
             }));
         }
+
+        // text
+
+        // level
+        drawText(this.ctx, `LVL:${Math.floor(this.totalLinesCleard / 10)}`, BLOCK_SIZE * 3, BLOCK_SIZE * 1.5, 'black', 40);
+        // score
+        drawText(this.ctx, `SCORE:${this.score}`, BLOCK_SIZE * 3, BLOCK_SIZE * 3, 'black', 40);
+        // next piece
+        drawText(this.ctx, 'HELD', BLOCK_SIZE * 0.6, BLOCK_SIZE * 1.2, 'black', 30);
+        // held piece
+        drawText(this.ctx, 'NEXT', BLOCK_SIZE * 7.6, BLOCK_SIZE * 1.2, 'black', 30);
     }
 
     showSelf() {
         // show set pieces and black background tiles
         this.grid.forEach( (row, i) => row.forEach( (tile, j) => {
-                drawRect(this.ctx, j * BLOCK_SIZE, (i) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, COLORS[tile]);
+            drawRect(this.ctx, j * BLOCK_SIZE, (i) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, COLORS[tile]);
         }));
 
         // show current piece
@@ -81,11 +92,11 @@ class Game {
             this.currentPiece.showSelf();
         }
 
-        // show ui
-        this.showUI();
-
         // show grid lines
         this.showGridLines();
+
+        // show ui
+        this.showUI();
     }
 
     spawnPiece() {
@@ -190,20 +201,33 @@ class Game {
     }
 
     calcSpeed() {
-    /*
-        50 100 200 300 400 550 700 850 1000
-       100  90  75  60  45  30  20  10    0
-    */
-        switch (this.totalLinesCleard) {
+        switch (Math.floor(this.score / 1000)) {
             case 0:
-                return 1000;
+                return 500;
+            case 1:
+                return 450;
+            case 2:
+                return 400;
+            case 3:
+                return 350;
+            case 4:
+                return 300;
+            case 5:
+                return 250;
+            case 6:
+                return 200;
+            case 7:
+                return 150;
+            case 8:
+                return 100;
+            case 9:
+                return 50;
+            case 10:
+                return 35;
+            default:
+                return 35;
         }
 
-
-
-        if (this.totalLinesCleard >= 10) {
-            return 0;
-        }
     }
 
     movePieceDown() {
@@ -223,6 +247,12 @@ class Game {
 
             // clear current piece
             this.currentPiece = null;
+        }
+    }
+
+    hardDrop() {
+        while (this.currentPiece != null) {
+            this.movePieceDown();
         }
     }
 

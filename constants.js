@@ -76,3 +76,9 @@ function drawRect(ctx, x, y, width, height, color) {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+function drawText(ctx, text, x, y, color, size) {
+    ctx.font = `${size}px monospace`;
+    ctx.fillStyle = color;
+    ctx.fillText(text, x, y);
+}

@@ -6,6 +6,8 @@ let gameover = false;
 
 document.addEventListener("keypress", (e) => {
     switch (e.code) {
+        case "KeyW":
+            game1.hardDrop();
         case "KeyD":
             game1.movePieceRight();
             break;
