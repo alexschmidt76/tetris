@@ -55,7 +55,7 @@ const SHAPES = [
 
 // colors of each shape
 const COLORS = [
-    "#000000",
+    "#525252",
     "#00ffff",
     "#0000ff",
     "#ffaa00",
@@ -71,6 +71,13 @@ function drawRect(ctx, x, y, width, height, color) {
     ctx.fillStyle = color;
     ctx.rect(x, y, width, height);
     ctx.fill();
+}
+
+function drawLine(ctx, x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
 }
 
 function sleep(ms) {

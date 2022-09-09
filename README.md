@@ -1,4 +1,5 @@
-use w and a to move right and left
+use d and a to move right and left
+use w to 'hard drop' the piece
 use q and e to rotate the piece
 use f to hold a piece
 

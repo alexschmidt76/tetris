@@ -21,20 +21,40 @@ class Game {
 
     // used for styling remove when game complete
     showGridLines() {
-        this.grid.forEach( (row, i) => {
-            this.ctx.beginPath();
-            this.ctx.moveTo(0, i * BLOCK_SIZE);
-            this.ctx.lineTo(COLS * BLOCK_SIZE, i * BLOCK_SIZE);
-            this.ctx.stroke();
+        for (let i = 0; i <= this.grid.length; i++) {
+            drawLine(this.ctx, 0, i * BLOCK_SIZE, COLS * BLOCK_SIZE, i * BLOCK_SIZE);
             if (i == 0) {
-                row.forEach( (col, j) => {
-                    this.ctx.beginPath();
-                this.ctx.moveTo(j * BLOCK_SIZE, 0);
-                this.ctx.lineTo(j * BLOCK_SIZE, (ROWS + BUFFER_ZONE) * BLOCK_SIZE);
-                this.ctx.stroke();
-                })
+                for (let j = 0; j <= this.grid[0].length; j++) {
+                    drawLine(this.ctx, j * BLOCK_SIZE, 0, j * BLOCK_SIZE, (ROWS + BUFFER_ZONE) * BLOCK_SIZE);
+                }
             }
+        };
+    }
+
+    drawMiniPiece(x, y, shape) {
+        const MINI_BLOCK_SIZE = BLOCK_SIZE / shape.length;
+        shape.forEach( (row, i) => {
+            row.forEach( (tile, j) => {
+                // draw piece
+                if (tile != 0) {
+                    drawRect(this.ctx, x + j * MINI_BLOCK_SIZE, y + i * MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, COLORS[tile]);
+                }
+            });
         });
+    }
+
+    drawMiniGrid(x, y, shape) {
+        const MINI_BLOCK_SIZE = BLOCK_SIZE / shape.length;
+        for (let i = 0; i <= shape.length; i++) {
+            drawLine(this.ctx, x, y + i * MINI_BLOCK_SIZE, x + shape.length * MINI_BLOCK_SIZE, y + i * MINI_BLOCK_SIZE);
+            if (i == 0) {
+                for (let j = 0; j <= shape[0].length; j++) {
+                    drawLine(this.ctx, x + j * MINI_BLOCK_SIZE, y, x + j * MINI_BLOCK_SIZE, y + shape.length * MINI_BLOCK_SIZE);
+                };
+            }
+        };
+        // add two extra lines
+        drawLine(this.ctx)
     }
 
     showUI() {
@@ -45,28 +65,16 @@ class Game {
         drawRect(this.ctx, (BLOCK_SIZE * 7) + 18, BLOCK_SIZE + 18, 72, 72, COLORS[0]);
         // next piece
         if (this.currentPiece != null) {
-            let x = BLOCK_SIZE * 8;
-            let y = BLOCK_SIZE * 2;
-            const MINI_BLOCK_SIZE = BLOCK_SIZE / this.nextPiece.shape.length;
-            this.nextPiece.shape.forEach( (row, i) => row.forEach( (tile, j) => {
-                if (tile != 0) {
-                    drawRect(this.ctx, x + j * MINI_BLOCK_SIZE, y + i * MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, COLORS[tile]);
-                }
-            }));
+            this.drawMiniPiece(BLOCK_SIZE * 8, BLOCK_SIZE * 2, this.nextPiece.shape);
+            this.drawMiniGrid(BLOCK_SIZE * 8, BLOCK_SIZE * 2, this.nextPiece.shape)
         }
 
         // held piece container
         drawRect(this.ctx, 18, BLOCK_SIZE + 18, 72, 72, COLORS[0]);
         // held piece
         if (this.heldPiece != null) {
-            let x = BLOCK_SIZE;
-            let y = BLOCK_SIZE * 2;
-            const MINI_BLOCK_SIZE = BLOCK_SIZE / this.heldPiece.shape.length;
-            this.heldPiece.shape.forEach( (row, i) => row.forEach( (tile, j) => {
-                if (tile != 0) {
-                    drawRect(this.ctx, x + j * MINI_BLOCK_SIZE, y + i * MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, COLORS[tile]);
-                }
-            }));
+            this.drawMiniPiece(BLOCK_SIZE, BLOCK_SIZE * 2, this.heldPiece.shape);
+            this.drawMiniGrid(BLOCK_SIZE, BLOCK_SIZE * 2, this.heldPiece.shape);
         }
 
         // logo
@@ -277,7 +285,7 @@ class Game {
 
         // check collisions
         if (this.detectCollision(this.currentPiece.x, this.currentPiece.y, shape)) {
-            // for loop checks for bottom corner cases 
+            // for loop checks for bottom and corner cases 
             for (let i = 0; i > -2; i--) {
                 // check floor collision
                 if (i != 0 && !this.detectCollision(this.currentPiece.x, this.currentPiece.y + i, shape)) {
