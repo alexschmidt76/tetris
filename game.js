@@ -39,7 +39,7 @@ class Game {
 
     showUI() {
         // background
-        drawRect(this.ctx, 0, 0, COLS * BLOCK_SIZE, BUFFER_ZONE * BLOCK_SIZE, '#a6a6a6');
+        drawRect(this.ctx, 0, 0, COLS * BLOCK_SIZE, BUFFER_ZONE * BLOCK_SIZE, '#317691');
 
         // next piece container
         drawRect(this.ctx, (BLOCK_SIZE * 7) + 18, BLOCK_SIZE + 18, 72, 72, COLORS[0]);
@@ -69,12 +69,10 @@ class Game {
             }));
         }
 
-        // text
-
+        // logo
+        drawText(this.ctx, 'TETRIS', BLOCK_SIZE * 2.6, BLOCK_SIZE * 1.5, 'black', 50);
         // level
-        drawText(this.ctx, `LVL:${Math.floor(this.totalLinesCleard / 10)}`, BLOCK_SIZE * 3, BLOCK_SIZE * 1.5, 'black', 40);
-        // score
-        drawText(this.ctx, `SCORE:${this.score}`, BLOCK_SIZE * 3, BLOCK_SIZE * 3, 'black', 40);
+        drawText(this.ctx, `LVL:${Math.floor(this.score / 1000)}`, BLOCK_SIZE * 3.5, BLOCK_SIZE * 3, 'black', 40);
         // next piece
         drawText(this.ctx, 'HELD', BLOCK_SIZE * 0.6, BLOCK_SIZE * 1.2, 'black', 30);
         // held piece
@@ -115,8 +113,8 @@ class Game {
         } else {
             let temp = this.heldPiece;
             this.heldPiece = this.currentPiece;
-            temp.x = this.currentPiece.x;
-            temp.y = this.currentPiece.y;
+            temp.x = COLS / 2 - Math.floor(temp.shape.length / 2);
+            temp.y = 0;
             this.currentPiece = temp;
         }
     }

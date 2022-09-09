@@ -3,6 +3,7 @@ const ctx1 = screen1.getContext('2d');
 
 const game1 = new Game(ctx1);
 let gameover = false;
+let holdUsed = false;
 
 document.addEventListener("keypress", (e) => {
     switch (e.code) {
@@ -22,7 +23,10 @@ document.addEventListener("keypress", (e) => {
             game1.rotatePiece(false);
             break;
         case "KeyF":
-            game1.holdPiece();
+            if (!holdUsed) {
+                game1.holdPiece();
+                holdUsed = true;
+            }
             break;
     }
 })
@@ -30,6 +34,7 @@ document.addEventListener("keypress", (e) => {
 async function mainloop() {
     while (!game1.gameOver) {
         game1.spawnPiece();
+        holdUsed = false;
         while (game1.currentPiece != null) {
             game1.showSelf();
             game1.movePieceDown();
