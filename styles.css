@@ -1,0 +1,70 @@
+body {
+    background-color: darkcyan;
+    font-family: monospace;
+    font-size: x-large;
+}
+
+body div {
+    position: relative;
+    width: 780px;
+    height: 800px;
+}
+
+#held-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 180px;
+    height: auto;
+    text-align: center;
+}
+
+#scoreboard {
+    position: absolute;
+    top: 400px;
+    left: 30px;
+    width: 115px;
+    height: auto;
+    text-align: center;
+}
+
+#lines-cleared,
+#level {
+    width: 115px;
+    height: 40px;
+    border: 2px solid black;
+    background-color: whitesmoke;
+    text-align: right;
+}
+
+p {
+    margin: 0;
+    padding-top: 3px;
+    padding-right: 10px;
+    font: 30px monospace;
+}
+
+#grid-box {
+    position: absolute;
+    top: 0;
+    left: 190px;
+    width: 400px;
+    height: 800px;
+}
+
+#next-box {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 180px;
+    height: auto;
+    text-align: center;
+}
+
+#logo-box {
+    position: absolute;
+    right: 0;
+    top: 280px;
+    width: 137px;
+    height: auto;
+}

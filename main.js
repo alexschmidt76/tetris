@@ -31,52 +31,73 @@ class Main {
         });
     }
 
+    showLogo () {
+        let canvas = document.getElementById("logo");
+        let ctx = canvas.getContext('2d');
+        const sqs = 14
+
+        ctx.fillStyle = COLORS[0];
+        ctx.fillRect(0, 0, sqs * 7, sqs * 37);
+        ctx.strokeStyle = "#000000";
+        ctx.strokeRect(0, 0, sqs * 7, sqs * 37)
+
+        LOGO.forEach( (row, i) => row.forEach( (tile, j) => {
+            if (tile == 1) {
+                ctx.fillStyle = COLORS[Math.floor(Math.random() * (COLORS.length - 1) + 1)];
+                ctx.fillRect(sqs + (j * sqs), sqs + (i * sqs), sqs, sqs);
+                ctx.strokeStyle = "#000000";
+                ctx.strokeRect(sqs + (j * sqs), sqs + (i * sqs), sqs, sqs);
+            }
+        }));
+    }
+
     showMenuGrid(shape, ctx) {
         // shallow copy shape
         let dispShape = shape.map( row => row.map( x => x ) );
+        let x, y;
 
-        // set square size for display
-        let sq = dispShape.length == 4 ? 36 : 30;
-
-        // refactor shape array for display (adds 'ring' of 0's around shape)
-        if (dispShape.length == 2) {
-            dispShape = [
-                [0, 0, 0, 0, 0],
-                [0, 7, 7, 0, 0],
-                [0, 7, 7, 0, 0],
-                [0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0]
-            ];
-        } else {
-            dispShape.forEach( row => {
-                row.unshift(0);
-                row.push(0);
-            });
-            let emptyRow = []
-            for (let i = 0; i < dispShape[0].length; i++) {
-                emptyRow.push(0);
-            }
-            dispShape.unshift(emptyRow);
-            dispShape.push(emptyRow);
+        // set coords
+        switch(dispShape.length) {
+            case 4:
+                x = 10;
+                y = 30;
+                break;
+            case 2:
+                x = 50;
+                y = 50;
+                break;
+            default:
+                x = 30;
+                y = 50;
+                break;
         }
-        // show shape in canvas
+
+        // draw bg and shape
+        ctx.fillStyle = COLORS[0];
+        ctx.fillRect(0, 0, 180, 180);
+        ctx.strokeStyle = "#000000";
+        ctx.strokeRect(0, 0, 180, 180);
         dispShape.forEach( (row, i) => row.forEach( (tile, j) => {
-            drawSquare(ctx, j * sq, i * sq, COLORS[tile]);
+            if (tile != 0) {
+                console.log(x, y, i, j)
+                drawSquare(ctx, x + j * SQ, y + i * SQ, COLORS[tile]);
+            }
         }));
     }
 
     mainloop() {
+        this.showLogo();
         let intervalID = setInterval( () => {
             console.log('loop')
 
             // show next and held pieces
             this.showMenuGrid(this.game.nextPiece.shape, this.nextPieceCtx);
             if (this.game.heldPiece == null) {
-            this.showMenuGrid([
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0]
-            ], this.heldPieceCtx);
+                this.showMenuGrid([
+                    [0, 0, 0],
+                    [0, 0, 0],
+                    [0, 0, 0]
+                ], this.heldPieceCtx);
             } else {
                 this.showMenuGrid(this.game.heldPiece.shape, this.heldPieceCtx);
             }

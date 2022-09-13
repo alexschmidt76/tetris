@@ -4,13 +4,38 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./styles.css">
     <title>Tetris</title>
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <div id="player-1">
-        <canvas id="screen1" width="360" height="864"></canvas>
+    <div>
+        <div id="held-box">
+            <h2>HELD PIECE</h2>
+            <canvas id="held-piece" width="180px" height="180px"></canvas>
+        </div>
+        <div id="scoreboard">
+            <h2>LINES CLEARED</h2>
+            <div id="lines-cleared">
+                <p id="lines-ctr">0</p>
+            </div>
+            <h2>LEVEL</h2>
+            <div id="level">
+                <p id="level-ctr">1<p>
+            </div>
+        </div>
+        <div id="grid-box">
+            <canvas id="grid" width="400px" height="800px"></canvas>
+        </div>
+        <div id="next-box">
+            <h2>NEXT PIECE</h2>
+            <canvas id="next-piece" width="180px" height="180px"></canvas>
+        </div>
+        <div id="logo-box">
+            <canvas id="logo" width="98px" height="532px"></canvas>
+        </div>
+        
     </div>
+
     <script src="./constants.js"></script>
     <script src="./piece.js"></script>
     <script src="./game.js"></script>
