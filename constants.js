@@ -1,59 +1,8 @@
-// grid for blocks
-const BLOCK_SIZE = 36;
-const ROWS = 20; // height is 700
-const BUFFER_ZONE = 4;
-const COLS = 10; // width is 350
+const GAME_CLOCK = 1000,
+      ROWS = 20,
+      COLS = 10,
+      SQ = 40;
 
-// game constants
-const REWARD = 10;
-
-// shapes of pieces in array form
-const SHAPES = [
-    // I
-    [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [1, 1, 1, 1],
-        [0, 0, 0, 0],
-    ],
-    // L
-    [
-        [0, 0, 0],
-        [2, 2, 2],
-        [2, 0, 0]
-    ],
-    // J
-    [
-        [0, 0, 0],
-        [3, 3, 3],
-        [0, 0, 3],
-    ],
-    // S
-    [
-        [0, 0, 0],
-        [0, 4, 4],
-        [4, 4, 0],
-    ],
-    // Z
-    [
-        [0, 0, 0],
-        [5, 5, 0],
-        [0, 5, 5],
-    ],
-    // T
-    [
-        [0, 0, 0],
-        [6, 6, 6],
-        [0, 6, 0],
-    ],
-    // O
-    [
-        [7, 7],
-        [7, 7]
-    ]
-]
-
-// colors of each shape
 const COLORS = [
     "#525252",
     "#00ffff",
@@ -65,27 +14,56 @@ const COLORS = [
     "#ffff00"
 ];
 
+const SHAPES = [
+     // I
+     [
+        [0, 0, 0, 0],
+        [1, 1, 1, 1],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+    ],
+    // L
+    [
+        [2, 2, 2],
+        [2, 0, 0],
+        [0, 0, 0]
+    ],
+    // J
+    [
+        [3, 3, 3],
+        [0, 0, 3],
+        [0, 0, 0]
+    ],
+    // S
+    [
+        [0, 4, 4],
+        [4, 4, 0],
+        [0, 0, 0]
+    ],
+    // Z
+    [
+        [5, 5, 0],
+        [0, 5, 5],
+        [0, 0, 0]
+    ],
+    // T
+    [
+        [6, 6, 6],
+        [0, 6, 0],
+        [0, 0, 0]
+    ],
+    // O
+    [
+        [7, 7],
+        [7, 7]
+    ]
+];
+
 // utility functions
-function drawRect(ctx, x, y, width, height, color) {
-    ctx.beginPath();
+
+function drawSquare(ctx, x, y, color) {
     ctx.fillStyle = color;
-    ctx.rect(x, y, width, height);
-    ctx.fill();
-}
-
-function drawLine(ctx, x1, y1, x2, y2) {
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function drawText(ctx, text, x, y, color, size) {
-    ctx.font = `${size}px monospace`;
-    ctx.fillStyle = color;
-    ctx.fillText(text, x, y);
+    ctx.fillRect(x, y, SQ, SQ);
+    ctx.strokeStyle = "#000000";
+    ctx.strokeRect(x, y, SQ, SQ);
 }

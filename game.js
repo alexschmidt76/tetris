@@ -1,16 +1,15 @@
 class Game {
     constructor(ctx) {
         this.ctx = ctx;
-        this.currentPiece = null;
-        this.heldPiece = null;
-        this.nextPiece = new Piece(SHAPES[Math.floor(Math.random() * SHAPES.length)], this.ctx);
-        this.gameOver = false;
-        this.score = 0;
-        this.totalLinesCleard = 0;
 
-        // build grid
+        this.currentPiece = null;
+        this.nextPiece = new Piece(SHAPES[Math.floor(Math.random() * SHAPES.length)], this.ctx);
+        this.heldPiece = null;
+
+        this.gameover = false;
+
         this.grid = [];
-        for (let i = 0; i < ROWS + BUFFER_ZONE; i++) {
+        for (let i = 0; i < ROWS; i++) {
             let row = [];
             for (let j = 0; j < COLS; j++) {
                 row.push(0);
@@ -19,312 +18,205 @@ class Game {
         }
     }
 
-    // used for styling remove when game complete
-    showGridLines() {
-        for (let i = 0; i <= this.grid.length; i++) {
-            drawLine(this.ctx, 0, i * BLOCK_SIZE, COLS * BLOCK_SIZE, i * BLOCK_SIZE);
-            if (i == 0) {
-                for (let j = 0; j <= this.grid[0].length; j++) {
-                    drawLine(this.ctx, j * BLOCK_SIZE, 0, j * BLOCK_SIZE, (ROWS + BUFFER_ZONE) * BLOCK_SIZE);
-                }
-            }
-        };
-    }
-
-    drawMiniPiece(x, y, shape) {
-        const MINI_BLOCK_SIZE = BLOCK_SIZE / shape.length;
-        shape.forEach( (row, i) => {
-            row.forEach( (tile, j) => {
-                // draw piece
-                if (tile != 0) {
-                    drawRect(this.ctx, x + j * MINI_BLOCK_SIZE, y + i * MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, MINI_BLOCK_SIZE, COLORS[tile]);
-                }
-            });
-        });
-    }
-
-    drawMiniGrid(x, y, shape) {
-        const MINI_BLOCK_SIZE = BLOCK_SIZE / shape.length;
-        for (let i = 0; i <= shape.length; i++) {
-            drawLine(this.ctx, x, y + i * MINI_BLOCK_SIZE, x + shape.length * MINI_BLOCK_SIZE, y + i * MINI_BLOCK_SIZE);
-            if (i == 0) {
-                for (let j = 0; j <= shape[0].length; j++) {
-                    drawLine(this.ctx, x + j * MINI_BLOCK_SIZE, y, x + j * MINI_BLOCK_SIZE, y + shape.length * MINI_BLOCK_SIZE);
-                };
-            }
-        };
-        // add two extra lines
-        drawLine(this.ctx)
-    }
-
-    showUI() {
-        // background
-        drawRect(this.ctx, 0, 0, COLS * BLOCK_SIZE, BUFFER_ZONE * BLOCK_SIZE, '#317691');
-
-        // next piece container
-        drawRect(this.ctx, (BLOCK_SIZE * 7) + 18, BLOCK_SIZE + 18, 72, 72, COLORS[0]);
-        // next piece
-        if (this.currentPiece != null) {
-            this.drawMiniPiece(BLOCK_SIZE * 8, BLOCK_SIZE * 2, this.nextPiece.shape);
-            this.drawMiniGrid(BLOCK_SIZE * 8, BLOCK_SIZE * 2, this.nextPiece.shape)
-        }
-
-        // held piece container
-        drawRect(this.ctx, 18, BLOCK_SIZE + 18, 72, 72, COLORS[0]);
-        // held piece
-        if (this.heldPiece != null) {
-            this.drawMiniPiece(BLOCK_SIZE, BLOCK_SIZE * 2, this.heldPiece.shape);
-            this.drawMiniGrid(BLOCK_SIZE, BLOCK_SIZE * 2, this.heldPiece.shape);
-        }
-
-        // logo
-        drawText(this.ctx, 'TETRIS', BLOCK_SIZE * 2.6, BLOCK_SIZE * 1.5, 'black', 50);
-        // level
-        drawText(this.ctx, `LVL:${Math.floor(this.score / 1000)}`, BLOCK_SIZE * 3.5, BLOCK_SIZE * 3, 'black', 40);
-        // next piece
-        drawText(this.ctx, 'HELD', BLOCK_SIZE * 0.6, BLOCK_SIZE * 1.2, 'black', 30);
-        // held piece
-        drawText(this.ctx, 'NEXT', BLOCK_SIZE * 7.6, BLOCK_SIZE * 1.2, 'black', 30);
-    }
+    // graphics
 
     showSelf() {
-        // show set pieces and black background tiles
         this.grid.forEach( (row, i) => row.forEach( (tile, j) => {
-            drawRect(this.ctx, j * BLOCK_SIZE, (i) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, COLORS[tile]);
+            drawSquare(this.ctx, j * SQ, i * SQ, COLORS[tile]);
         }));
 
-        // show current piece
         if (this.currentPiece != null) {
             this.currentPiece.showSelf();
         }
-
-        // show grid lines
-        this.showGridLines();
-
-        // show ui
-        this.showUI();
     }
+
+    // current piece handling
 
     spawnPiece() {
         this.currentPiece = this.nextPiece;
-        // get random shape for next piece
-        let shape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-        this.nextPiece = new Piece(shape, this.ctx);
+        this.nextPiece = new Piece(SHAPES[Math.floor(Math.random() * SHAPES.length)], this.ctx);
+
+        /* // detect collision for gameover
+        if (this.collision(this.currentPiece.x, this.currentPiece.y, this.currentPiece.shape)) {
+            this.gameover = true;
+            this.currentPiece = null;
+        } */
+
+        this.showSelf();
     }
 
     holdPiece() {
-        if (this.heldPiece == null) {
-            this.heldPiece = this.currentPiece;
-            this.currentPiece = this.nextPiece;
-            let shape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-            this.nextPiece = new Piece(shape, this.ctx);
-        } else {
-            let temp = this.heldPiece;
-            this.heldPiece = this.currentPiece;
-            temp.x = COLS / 2 - Math.floor(temp.shape.length / 2);
-            temp.y = 0;
-            this.currentPiece = temp;
+        if (this.currentPiece != null) {
+            if (this.heldPiece != null) {
+                // swap peices
+                let temp = this.currentPiece;
+                this.currentPiece = this.heldPiece;
+                this.heldPiece = temp;
+
+                // reset coords
+                this.currentPiece.x = COLS / 2 - Math.floor(this.currentPiece.shape.length / 2);
+                this.currentPiece.y = 0;
+            } else {
+                // for when there's no held piece yet
+                this.heldPiece = this.currentPiece;
+                this.spawnPiece();
+            }
         }
+
+        this.showSelf();
     }
 
-    // return true if collision occurs
-    // x and y are pos of piece at location of possible collision
-    detectCollision(x, y, shape) {
+    // piece and grid mechanics
+
+    collision(x, y, shape) {
+        // loop through shape array
         for (let i = 0; i < shape.length; i++) {
             for (let j = 0; j < shape.length; j++) {
-                // dont check empty tiles
+                // only check for filled tiles
                 if (shape[i][j] != 0) {
-                    // p and q are locations of each tile in piece
+                    // p & q represent locations of shape tiles in grid
                     let p = x + j;
                     let q = y + i;
-                    // check for in bounds (q can never be less than zero)
-                    if (p >= 0 && p < COLS && q < ROWS + BUFFER_ZONE) {
-                        // check tile for piece
-                        if (this.grid[q][p] != 0) {
-                            console.log('piece hit at ' + p + ' ' + q)
-                            if (q <= BUFFER_ZONE) {
-                                console.log('game over')
-                                this.gameOver = true;
+                    // ignore for buffer zone above board
+                    if (q >= 0) {
+                        // check for in bounds
+                        if (p < COLS && q < ROWS) {
+                            // check for collision with set piece in grid
+                            if (this.grid[q][p] != 0) {
+                                if (q == 0) {
+                                    this.gameover = true;
+                                }
+                                return true;
                             }
+                        // out of bounds
+                        } else {
                             return true;
                         }
-                    } else {
-                        // return true for hitting the walls or floor
-                        console.log('floor hit')
-                        return true;
                     }
                 }
             }
         }
-        // no collision occurs
-        console.log('no collision');
+        // no collision
         return false;
     }
 
-    // returns point value
-    clearFullRows() {
-        let linesCleared = 0;
+    setPiece() {
+        for (let i = 0; i < this.currentPiece.shape.length; i++) {
+            for (let j = 0; j < this.currentPiece.shape.length; j++) {
+                // p & q represent locations of shape tiles in grid
+                let p = this.currentPiece.x + j;
+                let q = this.currentPiece.y + i;
+                // set piece in grid and ignore pieces above grid (buffer zone)
+                if (q >= 0 && this.currentPiece.shape[i][j] != 0) {
+                    this.grid[q][p] = this.currentPiece.shape[i][j];
+                }
+            }
+        }
+    }
+
+    clearLines() {
         this.grid.forEach( (row, i) => {
-            if (row[0] != 0 &&
-                row[1] != 0 &&
-                row[2] != 0 &&
-                row[3] != 0 &&
-                row[4] != 0 &&
-                row[5] != 0 &&
-                row[6] != 0 &&
-                row[7] != 0 &&
-                row[8] != 0 &&
-                row[9] != 0) {
-                    linesCleared++;
-                    console.log(linesCleared)
-                    // if there are no zeros, make the rows above "fall" onto the others, deleting the full row
-                    for (let c = i; c >= BUFFER_ZONE; c--) {
-                        if (c == BUFFER_ZONE) {
-                            this.grid[c] = this.grid[c].map( tile => tile = 0 );
-                        } else {
-                            console.log('line cleared')
-                            this.grid[c] = this.grid[c].map( (tile, j) => tile = this.grid[c - 1][j] );
+            // check for full rows
+            let prod = 1;
+            row.forEach( tile => prod = prod * tile);
+            if (prod != 0) {
+                // clear row and add new empty row to top
+                this.grid.splice(i, 1);
+                this.grid.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            }
+        });
+    }
+
+    // movement and rotation
+
+    moveDown() {
+        // check for piece
+        if (this.currentPiece != null) {
+            if (!this.collision(this.currentPiece.x, this.currentPiece.y + 1, this.currentPiece.shape)) {
+                // move down if no collsion
+                this.currentPiece.y++;
+            } else {
+                // set piece if collision
+                this.setPiece();
+                this.spawnPiece();
+                this.clearLines();
+            }
+        }
+        this.showSelf();
+    }
+
+    moveHorizontal(right) {
+        // check for piece
+        if (this.currentPiece != null) {
+            // set direction
+            let dir = right ? 1 : -1;
+            if (!this.collision(this.currentPiece.x + dir, this.currentPiece.y, this.currentPiece.shape)) {
+                // move horizontal if no collision
+                this.currentPiece.x += dir;
+            }
+        }
+        this.showSelf();
+    }
+
+    rotate(clockwise) {
+        // check for piece
+        if (this.currentPiece != null) {
+
+            // O piece does not rotate
+            if (this.currentPiece.shape.length != 2) {
+
+                // rotate shape array
+                let shape = this.currentPiece.shape.map( row => row.map( x => x) );
+                
+                // clockwise three times for counterclockwise
+                let s = clockwise ? 1 : 3;
+                while (s > 0) {
+
+                    // transpose shape array
+                    for (let i = 0; i < shape.length; i++) {
+                        for (let j = 0; j < i; j++) {
+                        const temp = shape[i][j];
+                        shape[i][j] = shape[j][i];
+                        shape[j][i] = temp;
                         }
                     }
+
+                    // reverse every row in shape array
+                    shape = shape.map( row => row.reverse());
+
+                    s--;
                 }
-        });
 
-        this.totalLinesCleard += linesCleared;
-
-        // calculate score of move
-        switch (linesCleared) {
-            case 0:
-                return 0;
-            case 1:
-                return 100;
-            case 2:
-                return 300;
-            case 3:
-                return 500;
-            case 4:
-                return 800;
-        }
-    }
-
-    calcSpeed() {
-        switch (Math.floor(this.score / 1000)) {
-            case 0:
-                return 500;
-            case 1:
-                return 450;
-            case 2:
-                return 400;
-            case 3:
-                return 350;
-            case 4:
-                return 300;
-            case 5:
-                return 250;
-            case 6:
-                return 200;
-            case 7:
-                return 150;
-            case 8:
-                return 100;
-            case 9:
-                return 50;
-            case 10:
-                return 35;
-            default:
-                return 35;
-        }
-
-    }
-
-    movePieceDown() {
-        if (!this.detectCollision(this.currentPiece.x, this.currentPiece.y + 1, this.currentPiece.shape)) {
-            // move down if no collision
-            this.currentPiece.y++;
-        } else {
-            // set piece on grid if it collides with floor
-            this.currentPiece.shape.forEach( (row, i) => row.forEach( (tile, j) => {
-                if (tile != 0) {
-                    this.grid[this.currentPiece.y + i][this.currentPiece.x + j] = tile;
-                }
-            }));
-            
-            // look for clearable rows
-            this.score += this.clearFullRows();
-
-            // clear current piece
-            this.currentPiece = null;
-        }
-    }
-
-    hardDrop() {
-        while (this.currentPiece != null) {
-            this.movePieceDown();
-        }
-    }
-
-    rotatePiece(clockwise=true) {
-
-        // rotate shape array
-        let shape = this.currentPiece.shape.map( x => x);
-        
-        let s = clockwise ? 1 : 3;
-        while (s > 0) {
-            // transpose shape array
-            for (let i = 0; i < shape.length; i++) {
-                for (let j = 0; j < i; j++) {
-                const temp = shape[i][j];
-                shape[i][j] = shape[j][i];
-                shape[j][i] = temp;
+                // check collisions and move piece accordingly if possible
+                let x = this.currentPiece.x,
+                    y = this.currentPiece.y;
+                if (this.collision(x, y, shape)) {
+                    // check if moving the piece up to 2 tiles in both x and y directions works
+                    // first, check moving by 1, then by 2
+                    for (let c = 1; c <= 2; c++) {
+                        for (let i = -1 * c; i <= c; i += c) {
+                            for (let j = -1 * c; j <= c; j += c) {
+                                if (!this.collision(x + j, y + i, shape)) {
+                                    // set shape and move accordingly
+                                    this.currentPiece.shape = shape;
+                                    this.currentPiece.x = x + j;
+                                    this.currentPiece.y = y + i;
+                                    this.showSelf();
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    // no roatation possible
+                    this.showSelf();
+                    return;
+                } else {
+                    // set shape if no collision
+                    this.currentPiece.shape = shape;
+                    this.showSelf();
+                    return;
                 }
             }
-            // reverse every row in shape array
-            shape = shape.map( row => row.reverse());
-
-            s--;
         }
-
-        // check collisions
-        if (this.detectCollision(this.currentPiece.x, this.currentPiece.y, shape)) {
-            // for loop checks for bottom and corner cases 
-            for (let i = 0; i > -2; i--) {
-                // check floor collision
-                if (i != 0 && !this.detectCollision(this.currentPiece.x, this.currentPiece.y + i, shape)) {
-                    this.currentPiece.y + i;
-                    this.currentPiece.shape = shape;
-
-                // check for left collision
-                } else if (!this.detectCollision(this.currentPiece.x + 1, this.currentPiece.y + i, shape)) {
-                    // move piece right and rotate
-                    this.currentPiece.x++;
-                    this.currentPiece.shape = shape;
-
-                // check for right collision
-                } else if (!this.detectCollision(this.currentPiece.x - 1, this.currentPiece.y + i, shape)) {
-                    // move piece left and rotate
-                    this.currentPiece.x--;
-                    this.currentPiece.shape = shape;
-                }
-            }
-
-        // no collisoin
-        } else {
-            this.currentPiece.shape = shape;
-        }
-
-        this.showSelf();
-    }
-
-    movePieceRight() {
-        if (!this.detectCollision(this.currentPiece.x + 1, this.currentPiece.y, this.currentPiece.shape)) {
-            this.currentPiece.x++;
-        }
-        this.showSelf();
-    }
-
-    movePieceLeft() {
-        if (!this.detectCollision(this.currentPiece.x - 1, this.currentPiece.y, this.currentPiece.shape)) {
-            this.currentPiece.x--;
-        }
-        this.showSelf();
     }
 }

@@ -1,48 +1,106 @@
-const screen1 = document.getElementById('screen1');
-const ctx1 = screen1.getContext('2d');
+class Main {
+    constructor(screen, nextPiece, heldPiece, scoreboard) {
+        this.mainCtx = screen.getContext('2d');
+        this.scoreboard = scoreboard;
+        this.game = new Game(this.mainCtx);
+        
+        this.nextPieceCtx = nextPiece.getContext('2d');
+        this.heldPieceCtx = heldPiece.getContext('2d');
 
-const game1 = new Game(ctx1);
-let gameover = false;
-let holdUsed = false;
-
-document.addEventListener("keypress", (e) => {
-    switch (e.code) {
-        case "KeyW":
-            game1.hardDrop();
-        case "KeyD":
-            game1.movePieceRight();
-            break;
-        case "KeyA":
-            game1.movePieceLeft();
-            break;
-            break;
-        case "KeyE":
-            game1.rotatePiece(true);
-            break;
-        case "KeyQ":
-            game1.rotatePiece(false);
-            break;
-        case "KeyF":
-            if (!holdUsed) {
-                game1.holdPiece();
-                holdUsed = true;
+        // controls
+        document.addEventListener('keydown', (e) => {
+            switch(e.keyCode) {
+                case 37:
+                    this.game.moveHorizontal(false);
+                    break;
+                case 39:
+                    this.game.moveHorizontal(true);
+                    break;
+                case 40:
+                    this.game.moveDown();
+                    break;
+                case 90:
+                    this.game.rotate(false);
+                    break;
+                case 88:
+                    this.game.rotate(true);
+                case 67:
+                    this.game.holdPiece();
+                    break;
             }
-            break;
+        });
     }
-})
 
-async function mainloop() {
-    while (!game1.gameOver) {
-        game1.spawnPiece();
-        holdUsed = false;
-        while (game1.currentPiece != null) {
-            game1.showSelf();
-            game1.movePieceDown();
-            await sleep(game1.calcSpeed());
+    showMenuGrid(shape, ctx) {
+        // shallow copy shape
+        let dispShape = shape.map( row => row.map( x => x ) );
+
+        // set square size for display
+        let sq = dispShape.length == 4 ? 36 : 30;
+
+        // refactor shape array for display (adds 'ring' of 0's around shape)
+        if (dispShape.length == 2) {
+            dispShape = [
+                [0, 0, 0, 0, 0],
+                [0, 7, 7, 0, 0],
+                [0, 7, 7, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ];
+        } else {
+            dispShape.forEach( row => {
+                row.unshift(0);
+                row.push(0);
+            });
+            let emptyRow = []
+            for (let i = 0; i < dispShape[0].length; i++) {
+                emptyRow.push(0);
+            }
+            dispShape.unshift(emptyRow);
+            dispShape.push(emptyRow);
         }
-        game1.showSelf();
+        // show shape in canvas
+        dispShape.forEach( (row, i) => row.forEach( (tile, j) => {
+            drawSquare(ctx, j * sq, i * sq, COLORS[tile]);
+        }));
+    }
+
+    mainloop() {
+        let intervalID = setInterval( () => {
+            console.log('loop')
+
+            // show next and held pieces
+            this.showMenuGrid(this.game.nextPiece.shape, this.nextPieceCtx);
+            if (this.game.heldPiece == null) {
+            this.showMenuGrid([
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ], this.heldPieceCtx);
+            } else {
+                this.showMenuGrid(this.game.heldPiece.shape, this.heldPieceCtx);
+            }
+
+            // main gameloop
+            if (this.game.gameover) {
+                clearInterval(intervalID);
+            } else {
+                // spawn new piece
+                if (this.game.currentPiece == null) {
+                    this.game.spawnPiece();
+                }
+                
+                // move piece down
+                this.game.moveDown();
+            }
+        }, GAME_CLOCK);
     }
 }
 
-mainloop();
+let screen = document.getElementById('grid');
+let nextPiece = document.getElementById('next-piece');
+let heldPiece = document.getElementById('held-piece');
+let scoreboard = document.getElementById('scoreboard');
+let game = new Main(screen, nextPiece, heldPiece, scoreboard);
 
+game.mainloop();
