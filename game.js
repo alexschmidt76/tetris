@@ -27,8 +27,26 @@ class Game {
         }));
 
         if (this.currentPiece != null) {
+            this.showShadow();
             this.currentPiece.showSelf();
         }
+    }
+
+    showShadow() {
+        // copy piece and move
+        let shadowPiece = this.currentPiece.shape.map( row => row.map( x => x ) );
+        let x = this.currentPiece.x;
+        let y = this.currentPiece.y;
+        while (!this.collision(x, y + 1, shadowPiece)) {
+            y++;
+        }
+        // show shadow
+        shadowPiece.forEach( (row, i) => row.forEach( (tile, j) => {
+            if (tile != 0) {
+                drawRect(this.ctx, (x + j) * SQ, (y + i) * SQ, SQ, SQ, COLORS[tile]);
+                drawRect(this.ctx, (x + j) * SQ + 7, (y + i) * SQ + 7, SQ - 14, SQ -14, COLORS[0]);
+            }
+        }));
     }
 
     // current piece handling
