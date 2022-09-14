@@ -8,6 +8,7 @@ body div {
     position: relative;
     width: 780px;
     height: 800px;
+    margin: auto;
 }
 
 #held-box {

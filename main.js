@@ -31,6 +31,8 @@ class Main {
         });
     }
 
+    // show methods
+
     showLogo () {
         let canvas = document.getElementById("logo");
         let ctx = canvas.getContext('2d');
@@ -85,10 +87,10 @@ class Main {
         }));
     }
 
-    mainloop() {
+    async mainloop() {
         this.showLogo();
-        let intervalID = setInterval( () => {
-            console.log('loop')
+
+        while (!this.game.gameover) {
 
             // show next and held pieces
             this.showMenuGrid(this.game.nextPiece.shape, this.nextPieceCtx);
@@ -102,22 +104,23 @@ class Main {
                 this.showMenuGrid(this.game.heldPiece.shape, this.heldPieceCtx);
             }
 
-            // main gameloop
-            if (this.game.gameover) {
-                clearInterval(intervalID);
-            } else {
-                // spawn new piece
-                if (this.game.currentPiece == null) {
-                    this.game.spawnPiece();
-                }
-                
-                // move piece down
-                this.game.moveDown();
+            // spawn new piece
+            if (this.game.currentPiece == null) {
+                this.game.spawnPiece();
             }
-        }, GAME_CLOCK);
+            
+            // move piece down
+            this.game.moveDown();
+
+            // wait gamespeed for next move
+            await sleep(this.game.getSpeed());
+        }
+
+        this.showGameOver();
     }
 }
 
+// setup game
 let screen = document.getElementById('grid');
 let nextPiece = document.getElementById('next-piece');
 let heldPiece = document.getElementById('held-piece');

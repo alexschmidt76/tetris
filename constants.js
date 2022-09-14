@@ -59,13 +59,17 @@ const SHAPES = [
     ]
 ];
 
-// utility function
+// utility functions
 
 function drawSquare(ctx, x, y, color) {
     ctx.fillStyle = color;
     ctx.fillRect(x, y, SQ, SQ);
     ctx.strokeStyle = "#000000";
     ctx.strokeRect(x, y, SQ, SQ);
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // tetris logo array

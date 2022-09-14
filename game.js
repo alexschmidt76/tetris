@@ -7,6 +7,7 @@ class Game {
         this.heldPiece = null;
 
         this.gameover = false;
+        this.linesCleared = 0;
 
         this.grid = [];
         for (let i = 0; i < ROWS; i++) {
@@ -114,6 +115,16 @@ class Game {
         }
     }
 
+    getSpeed() {
+        return 1000 - this.getLevel() * 100;
+    }
+
+    // scoring 
+
+    getLevel() {
+        return Math.floor(this.linesCleared / 5) + 1;
+    }
+
     clearLines() {
         this.grid.forEach( (row, i) => {
             // check for full rows
@@ -123,7 +134,14 @@ class Game {
                 // clear row and add new empty row to top
                 this.grid.splice(i, 1);
                 this.grid.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+                this.linesCleared++;
             }
+
+            // update display
+            let linesText = document.getElementById('lines-ctr');
+            linesText.textContent = this.linesCleared;
+            let levelText = document.getElementById('level-ctr');
+            levelText.textContent = this.getLevel();
         });
     }
 
