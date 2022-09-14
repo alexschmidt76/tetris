@@ -10,7 +10,7 @@ class Piece  {
     showSelf() {
         this.shape.forEach( (row, i) => row.forEach( (tile, j) => {
             if (tile != 0) {
-                drawSquare(this.ctx, (this.x + j) * SQ, (this.y + i) * SQ, COLORS[tile]);
+                drawRect(this.ctx, (this.x + j) * SQ, (this.y + i) * SQ, SQ, SQ, COLORS[tile]);
             } 
         }))
     }

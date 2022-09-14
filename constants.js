@@ -61,11 +61,11 @@ const SHAPES = [
 
 // utility functions
 
-function drawSquare(ctx, x, y, color) {
+function drawRect(ctx, x, y, w, h, color) {
     ctx.fillStyle = color;
-    ctx.fillRect(x, y, SQ, SQ);
+    ctx.fillRect(x, y, w, h);
     ctx.strokeStyle = "#000000";
-    ctx.strokeRect(x, y, SQ, SQ);
+    ctx.strokeRect(x, y, w, h);
 }
 
 function sleep(ms) {

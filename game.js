@@ -23,7 +23,7 @@ class Game {
 
     showSelf() {
         this.grid.forEach( (row, i) => row.forEach( (tile, j) => {
-            drawSquare(this.ctx, j * SQ, i * SQ, COLORS[tile]);
+            drawRect(this.ctx, j * SQ, i * SQ, SQ, SQ, COLORS[tile]);
         }));
 
         if (this.currentPiece != null) {
@@ -113,6 +113,7 @@ class Game {
                 }
             }
         }
+        this.currentPiece = null;
     }
 
     getSpeed() {
@@ -156,7 +157,6 @@ class Game {
             } else {
                 // set piece if collision
                 this.setPiece();
-                this.spawnPiece();
                 this.clearLines();
             }
         }
@@ -235,6 +235,12 @@ class Game {
                     return;
                 }
             }
+        }
+    }
+
+    hardDrop() {
+        while (this.currentPiece != null) {
+            this.moveDown();
         }
     }
 }

@@ -9,51 +9,64 @@ class Main {
 
         // controls
         document.addEventListener('keydown', (e) => {
-            switch(e.keyCode) {
-                case 37:
-                    this.game.moveHorizontal(false);
-                    break;
-                case 39:
-                    this.game.moveHorizontal(true);
-                    break;
-                case 40:
-                    this.game.moveDown();
-                    break;
-                case 90:
-                    this.game.rotate(false);
-                    break;
-                case 88:
-                    this.game.rotate(true);
-                case 67:
-                    this.game.holdPiece();
-                    break;
+            if (!this.game.gameover) {
+                switch(e.keyCode) {
+                    case 37:
+                        this.game.moveHorizontal(false);
+                        break;
+                    case 38:
+                        this.game.hardDrop();
+                    case 39:
+                        this.game.moveHorizontal(true);
+                        break;
+                    case 40:
+                        this.game.moveDown();
+                        break;
+                    case 90:
+                        this.game.rotate(false);
+                        break;
+                    case 88:
+                        this.game.rotate(true);
+                    case 67:
+                        this.game.holdPiece();
+                        break;
+                }
             }
         });
     }
 
     // show methods
 
+    showGameOver() {
+        let ctx = this.mainCtx;
+        drawRect(ctx, 1.5 * SQ, 7.5 * SQ, 7 * SQ, 5 * SQ, '#000000');
+        ctx.font = '80px monospace';
+        ctx.fillStyle = '#ffffff'
+        ctx.fillText('GAME', 2.9 * SQ, 9.75 * SQ);
+        ctx.fillText('OVER', 2.9 * SQ, 11.5 * SQ);
+    }
+
     showLogo () {
         let canvas = document.getElementById("logo");
         let ctx = canvas.getContext('2d');
         const sqs = 14
 
-        ctx.fillStyle = COLORS[0];
-        ctx.fillRect(0, 0, sqs * 7, sqs * 37);
-        ctx.strokeStyle = "#000000";
-        ctx.strokeRect(0, 0, sqs * 7, sqs * 37)
+        drawRect(ctx, 0, 0, sqs * 7, sqs * 37, COLORS[0]);
 
         LOGO.forEach( (row, i) => row.forEach( (tile, j) => {
             if (tile == 1) {
-                ctx.fillStyle = COLORS[Math.floor(Math.random() * (COLORS.length - 1) + 1)];
-                ctx.fillRect(sqs + (j * sqs), sqs + (i * sqs), sqs, sqs);
-                ctx.strokeStyle = "#000000";
-                ctx.strokeRect(sqs + (j * sqs), sqs + (i * sqs), sqs, sqs);
+                drawRect(ctx, sqs + (j * sqs), sqs + (i * sqs), sqs, sqs, COLORS[Math.floor(Math.random() * (COLORS.length - 1) + 1)]);
             }
         }));
     }
 
     showMenuGrid(shape, ctx) {
+        // draw bg
+        drawRect(ctx, 0, 0, 180, 180, COLORS[0]);
+
+        // exit for null shape
+        if (shape == null) return;
+
         // shallow copy shape
         let dispShape = shape.map( row => row.map( x => x ) );
         let x, y;
@@ -74,15 +87,10 @@ class Main {
                 break;
         }
 
-        // draw bg and shape
-        ctx.fillStyle = COLORS[0];
-        ctx.fillRect(0, 0, 180, 180);
-        ctx.strokeStyle = "#000000";
-        ctx.strokeRect(0, 0, 180, 180);
+        // draw shape
         dispShape.forEach( (row, i) => row.forEach( (tile, j) => {
-            if (tile != 0) {
-                console.log(x, y, i, j)
-                drawSquare(ctx, x + j * SQ, y + i * SQ, COLORS[tile]);
+            if (tile !== 0) {
+                drawRect(ctx, x + j * SQ, y + i * SQ, SQ, SQ, COLORS[tile]);
             }
         }));
     }
@@ -95,11 +103,7 @@ class Main {
             // show next and held pieces
             this.showMenuGrid(this.game.nextPiece.shape, this.nextPieceCtx);
             if (this.game.heldPiece == null) {
-                this.showMenuGrid([
-                    [0, 0, 0],
-                    [0, 0, 0],
-                    [0, 0, 0]
-                ], this.heldPieceCtx);
+                this.showMenuGrid(null, this.heldPieceCtx);
             } else {
                 this.showMenuGrid(this.game.heldPiece.shape, this.heldPieceCtx);
             }
