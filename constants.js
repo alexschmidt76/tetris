@@ -69,7 +69,7 @@ function drawRect(ctx, x, y, w, h, color) {
 }
 
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise( resolve => setTimeout(resolve, ms) );
 }
 
 // tetris logo array

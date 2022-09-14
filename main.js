@@ -9,7 +9,7 @@ class Main {
 
         // controls
         document.addEventListener('keydown', (e) => {
-            if (!this.game.gameover) {
+            if (!this.game.gameover && !this.game.paused) {
                 switch(e.keyCode) {
                     case 37:
                         this.game.moveHorizontal(false);
@@ -30,12 +30,62 @@ class Main {
                     case 67:
                         this.game.holdPiece();
                         break;
+                    case 82:
+                        this.game.reset();
+                        break;
                 }
+            }
+
+            if (!this.game.gameover && e.keyCode == 80) {
+                this.game.paused = this.game.paused ? false : true;
             }
         });
     }
 
+    async mainloop() {
+
+        this.showLogo();
+
+        while (!this.game.gameover) {
+
+            // show next and held pieces
+            this.showMenuGrid(this.game.nextPiece.shape, this.nextPieceCtx);
+            if (this.game.heldPiece == null) {
+                this.showMenuGrid(null, this.heldPieceCtx);
+            } else {
+                this.showMenuGrid(this.game.heldPiece.shape, this.heldPieceCtx);
+            }
+
+            // spawn new piece
+            if (this.game.currentPiece == null) {
+                this.game.spawnPiece();
+            }
+            
+            // move piece down
+            if (!this.game.paused) {
+                this.game.moveDown();
+            } else {
+                this.showPause();
+            }
+            
+
+            // wait gamespeed for next move
+            await sleep(this.game.getSpeed());
+
+        }
+
+        this.showGameOver();
+    }
+    
     // show methods
+
+    showPause() {
+        let ctx = this.mainCtx;
+        drawRect(ctx, 1.5 * SQ, 8.5 * SQ, 7 * SQ, 3 * SQ, '#000000');
+        ctx.font = '80px monospace';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('PAUSED', 1.7 * SQ, 10.7 * SQ);
+    }
 
     showGameOver() {
         let ctx = this.mainCtx;
@@ -93,34 +143,6 @@ class Main {
                 drawRect(ctx, x + j * SQ, y + i * SQ, SQ, SQ, COLORS[tile]);
             }
         }));
-    }
-
-    async mainloop() {
-        this.showLogo();
-
-        while (!this.game.gameover) {
-
-            // show next and held pieces
-            this.showMenuGrid(this.game.nextPiece.shape, this.nextPieceCtx);
-            if (this.game.heldPiece == null) {
-                this.showMenuGrid(null, this.heldPieceCtx);
-            } else {
-                this.showMenuGrid(this.game.heldPiece.shape, this.heldPieceCtx);
-            }
-
-            // spawn new piece
-            if (this.game.currentPiece == null) {
-                this.game.spawnPiece();
-            }
-            
-            // move piece down
-            this.game.moveDown();
-
-            // wait gamespeed for next move
-            await sleep(this.game.getSpeed());
-        }
-
-        this.showGameOver();
     }
 }
 

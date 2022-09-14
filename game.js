@@ -6,6 +6,7 @@ class Game {
         this.nextPiece = new Piece(SHAPES[Math.floor(Math.random() * SHAPES.length)], this.ctx);
         this.heldPiece = null;
 
+        this.paused = false;
         this.gameover = false;
         this.linesCleared = 0;
 
@@ -17,6 +18,26 @@ class Game {
             }
             this.grid.push(row);
         }
+    }
+
+    reset() {
+        this.currentPiece = null;
+        this.nextPiece = new Piece(SHAPES[Math.floor(Math.random() * SHAPES.length)], this.ctx);
+        this.heldPiece = null;
+
+        this.gameover = false;
+        this.linesCleared = 0;
+
+        this.grid = [];
+        for (let i = 0; i < ROWS; i++) {
+            let row = [];
+            for (let j = 0; j < COLS; j++) {
+                row.push(0);
+            }
+            this.grid.push(row);
+        }
+
+        this.showSelf();
     }
 
     // graphics
@@ -135,7 +156,7 @@ class Game {
     }
 
     getSpeed() {
-        return 1000 - this.getLevel() * 100;
+        return 1000 - (this.getLevel() - 1 ) * 100;
     }
 
     // scoring 

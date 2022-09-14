@@ -1,7 +1,8 @@
-use d and a to move right and left
-use w to 'hard drop' the piece
-use q and e to rotate the piece
-use f to hold a piece
+How To Play:
+Arrow Keys for Left, Right, and Down
+'Z' and 'X' to Rotate Counterclockwise and Clockwise respectively
+'C' to Hold a Piece
+Up Arrow Key to Hard Drop
 
-upper right box is next piece
-upper left box is held piece
+Press R to Restart
+Press P to Pause
