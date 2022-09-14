@@ -8,11 +8,19 @@
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <div>
+    <div id="game">
         <div id="held-box">
             <h2>HELD PIECE</h2>
             <canvas id="held-piece" width="180px" height="180px"></canvas>
         </div>
+
+        <div id="p-box">
+            <p id="menu-btns">
+                Press <b>R</b> to <b>Restart</b><br>
+                Press <b>P</b> to <b>Pause</b>
+            </p>
+        </div>
+        
         <div id="scoreboard">
             <h2>LINES CLEARED</h2>
             <div id="lines-cleared">
@@ -34,6 +42,15 @@
             <canvas id="logo" width="98px" height="532px"></canvas>
         </div>
         
+    </div>
+    <div id="controls">
+        <h4>How To Play:</h4>
+        <p>
+            Arrow Keys for Left, Right, and Down<br>
+            'Z' and 'X' to Rotate Counterclockwise and Clockwise respectively<br>
+            'C' to Hold a Piece<br>
+            Up Arrow Key to Hard Drop
+        </p>
     </div>
 
     <script src="./constants.js"></script>

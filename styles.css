@@ -4,11 +4,26 @@ body {
     font-size: x-large;
 }
 
-body div {
+#game {
     position: relative;
     width: 780px;
     height: 800px;
     margin: auto;
+}
+
+#controls {
+    width: fit-content;
+    margin: auto;
+    text-align: left;
+}
+
+#controls p {
+    font-size: large;
+    margin-top: -25px;
+}
+
+#controls h4 {
+    margin-top: 15px; 
 }
 
 #held-box {
@@ -22,7 +37,7 @@ body div {
 
 #scoreboard {
     position: absolute;
-    top: 400px;
+    top: 450px;
     left: 30px;
     width: 115px;
     height: auto;
@@ -68,4 +83,13 @@ p {
     top: 280px;
     width: 137px;
     height: auto;
+}
+
+#p-box {
+    position: relative;
+    width: 180px;
+    height: auto;
+    left: 0;
+    top: 300px;
+    text-align: center;
 }
