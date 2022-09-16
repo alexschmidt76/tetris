@@ -54,7 +54,7 @@ class Game {
     }
 
     showShadow() {
-        // copy piece and move
+        // shalow copy piece and move
         let shadowPiece = this.currentPiece.shape.map( row => row.map( x => x ) );
         let x = this.currentPiece.x;
         let y = this.currentPiece.y;
@@ -73,14 +73,9 @@ class Game {
     // current piece handling
 
     spawnPiece() {
+        // spawn next piece then generate new next piece
         this.currentPiece = this.nextPiece;
         this.nextPiece = new Piece(SHAPES[Math.floor(Math.random() * SHAPES.length)], this.ctx);
-
-        /* // detect collision for gameover
-        if (this.collision(this.currentPiece.x, this.currentPiece.y, this.currentPiece.shape)) {
-            this.gameover = true;
-            this.currentPiece = null;
-        } */
 
         this.showSelf();
     }
@@ -114,24 +109,23 @@ class Game {
             for (let j = 0; j < shape.length; j++) {
                 // only check for filled tiles
                 if (shape[i][j] != 0) {
+
                     // p & q represent locations of shape tiles in grid
                     let p = x + j;
                     let q = y + i;
-                    // ignore for buffer zone above board
-                    if (q >= 0) {
-                        // check for in bounds
-                        if (p < COLS && q < ROWS) {
-                            // check for collision with set piece in grid
-                            if (this.grid[q][p] != 0) {
-                                if (q == 0) {
-                                    this.gameover = true;
-                                }
-                                return true;
-                            }
-                        // out of bounds
-                        } else {
+                    console.log(p, q);
+
+                    // check for in bounds
+                    if (p >= 0 && p < COLS && q < ROWS) {
+                        // check for collision with set piece in grid
+                        if (q >= 0 && this.grid[q][p] != 0) {
+                            console.log('collision at x: ', p, ' y: ', q, '\ngameover: ', this.gameover);
                             return true;
-                        }
+                        } 
+
+                    // out of bounds
+                    } else {
+                        return true;
                     }
                 }
             }
@@ -149,6 +143,8 @@ class Game {
                 // set piece in grid and ignore pieces above grid (buffer zone)
                 if (q >= 0 && this.currentPiece.shape[i][j] != 0) {
                     this.grid[q][p] = this.currentPiece.shape[i][j];
+                } else if (q < 0) {
+                    this.gameover = true;
                 }
             }
         }
