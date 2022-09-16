@@ -37,13 +37,19 @@ body {
 
 #scoreboard {
     position: absolute;
-    top: 450px;
-    left: 30px;
+    top: 470px;
+    left: 33px;
     width: 115px;
     height: auto;
     text-align: center;
 }
 
+#scoreboard h2 {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+#score,
 #lines-cleared,
 #level {
     width: 115px;
@@ -89,7 +95,7 @@ p {
     position: relative;
     width: 180px;
     height: auto;
-    left: 0;
+    left: 5px;
     top: 300px;
     text-align: center;
 }

@@ -9,6 +9,7 @@ class Game {
         this.paused = false;
         this.gameover = false;
         this.linesCleared = 0;
+        this.score = 0;
 
         this.grid = [];
         for (let i = 0; i < ROWS; i++) {
@@ -27,6 +28,7 @@ class Game {
 
         this.gameover = false;
         this.linesCleared = 0;
+        this.score = 0;
 
         this.grid = [];
         for (let i = 0; i < ROWS; i++) {
@@ -113,13 +115,11 @@ class Game {
                     // p & q represent locations of shape tiles in grid
                     let p = x + j;
                     let q = y + i;
-                    console.log(p, q);
 
                     // check for in bounds
                     if (p >= 0 && p < COLS && q < ROWS) {
                         // check for collision with set piece in grid
                         if (q >= 0 && this.grid[q][p] != 0) {
-                            console.log('collision at x: ', p, ' y: ', q, '\ngameover: ', this.gameover);
                             return true;
                         } 
 
@@ -162,8 +162,11 @@ class Game {
     }
 
     clearLines() {
+        let lineAmt = 0; // for calculating score
+
         this.grid.forEach( (row, i) => {
-            // check for full rows
+            // check for full rows by multiplying all tile values
+            // together and checking for 0
             let prod = 1;
             row.forEach( tile => prod = prod * tile);
             if (prod != 0) {
@@ -171,14 +174,36 @@ class Game {
                 this.grid.splice(i, 1);
                 this.grid.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
                 this.linesCleared++;
+                lineAmt++;
             }
-
-            // update display
-            let linesText = document.getElementById('lines-ctr');
-            linesText.textContent = this.linesCleared;
-            let levelText = document.getElementById('level-ctr');
-            levelText.textContent = this.getLevel();
         });
+
+        // evaluate score
+        console.log(lineAmt)
+        switch (lineAmt) {
+            case 1:
+                this.score += 100;
+                break;
+            case 2:
+                this.score += 300;
+                break;
+            case 3:
+                this.score += 500;
+                break;
+            case 4:
+                this.score += 800;
+                break;
+            default:
+                break;
+        }
+
+        // update display
+        let linesText = document.getElementById('lines-ctr');
+        linesText.textContent = this.linesCleared;
+        let levelText = document.getElementById('level-ctr');
+        levelText.textContent = this.getLevel();
+        let scoreText = document.getElementById('score-ctr');
+        scoreText.textContent = this.score;
     }
 
     // movement and rotation
