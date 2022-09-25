@@ -10,6 +10,7 @@ class Main {
         // controls
         document.addEventListener('keydown', (e) => {
             if (!this.game.gameover && !this.game.paused) {
+                console.log(e.keyCode)
                 switch(e.keyCode) {
                     case 37:
                         this.game.moveHorizontal(false);
@@ -20,6 +21,7 @@ class Main {
                         this.game.moveHorizontal(true);
                         break;
                     case 40:
+                        this.game.score += this.game.getLevel();
                         this.game.moveDown();
                         break;
                     case 90:
@@ -27,6 +29,7 @@ class Main {
                         break;
                     case 88:
                         this.game.rotate(true);
+                        break;
                     case 67:
                         this.game.holdPiece();
                         break;
@@ -123,21 +126,50 @@ class Main {
 
         // set coords
         switch(dispShape.length) {
+            // I shape
             case 4:
-                x = 10;
-                y = 30;
+                // check for roation orientation to disp correctly
+                // horizontal
+                if (dispShape[0][0] == 0 && dispShape[0][1] == 0 && dispShape[0][2] == 0 && dispShape[0][3] == 0) {
+                    x =  10;
+                    y = dispShape[1][0] != 0 ? 30 : -10; // check for upper or lower of center
+                // vertical
+                } else {
+                    x = dispShape[0][1] != 0 ?  30 : -10; //check for left or right of center
+                    y = 10;
+                }
                 break;
+            // L, J, S, Z and T shapes
+            case 3:
+                // check for roation to disp correctly
+                // 0deg
+                if (dispShape[2][0] == 0 && dispShape[2][1] == 0 && dispShape[2][2] == 0) {
+                    x = 30;
+                    y = 50;
+                // 90deg clockwise
+                } else if (dispShape[0][0] == 0 && dispShape[1][0] == 0 && dispShape[2][0] == 0) {
+                    x = 10;
+                    y = 30;
+                // 180deg
+                } else if (dispShape[0][0] == 0 && dispShape[0][1] == 0 && dispShape[0][2] == 0) {
+                    x = 30;
+                    y = 10;
+                // 90deg counterclockwise
+                } else if (dispShape[0][2] == 0 && dispShape[1][2] == 0 && dispShape[2][2] == 0) {
+                    x = 50;
+                    y = 30;
+                }
+                break;
+            // O shape (no rotations)
             case 2:
                 x = 50;
-                y = 50;
-                break;
-            default:
-                x = 30;
                 y = 50;
                 break;
         }
 
         // draw shape
+        console.log(x, y)
+        console.log(dispShape)
         dispShape.forEach( (row, i) => row.forEach( (tile, j) => {
             if (tile !== 0) {
                 drawRect(ctx, x + j * SQ, y + i * SQ, SQ, SQ, COLORS[tile]);

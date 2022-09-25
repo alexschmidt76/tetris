@@ -53,6 +53,10 @@ class Game {
             this.showShadow();
             this.currentPiece.showSelf();
         }
+
+        // update score
+        let scoreText = document.getElementById('score-ctr');
+        scoreText.textContent = this.score;
     }
 
     showShadow() {
@@ -179,19 +183,18 @@ class Game {
         });
 
         // evaluate score
-        console.log(lineAmt)
         switch (lineAmt) {
             case 1:
-                this.score += 100;
+                this.score += (100 * this.getLevel());
                 break;
             case 2:
-                this.score += 300;
+                this.score += (300 * this.getLevel());
                 break;
             case 3:
-                this.score += 500;
+                this.score += (500 * this.getLevel());
                 break;
             case 4:
-                this.score += 800;
+                this.score += (800 * this.getLevel());
                 break;
             default:
                 break;
@@ -211,6 +214,7 @@ class Game {
     moveDown() {
         // check for piece
         if (this.currentPiece != null) {
+            var y = this.currentPiece.y;
             if (!this.collision(this.currentPiece.x, this.currentPiece.y + 1, this.currentPiece.shape)) {
                 // move down if no collsion
                 this.currentPiece.y++;
@@ -221,6 +225,7 @@ class Game {
             }
         }
         this.showSelf();
+        return y;
     }
 
     moveHorizontal(right) {
@@ -299,8 +304,10 @@ class Game {
     }
 
     hardDrop() {
+        let y0 = this.currentPiece.y
         while (this.currentPiece != null) {
-            this.moveDown();
+            var y1 = this.moveDown();
         }
+        this.score += 2 * (y1 - y0);
     }
 }
