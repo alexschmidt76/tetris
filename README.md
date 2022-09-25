@@ -10,7 +10,9 @@
 - Press P to Pause
 
 Using the arrow keys to move the pieces left, right and down, fill the rows with set pieces to clear lines. Clear multiple lines in one move to earn more points per line. The more lines you clear, the faster the pieces fall, see how many points you can get before the pieces reach the top!
+
 With each new piece that comes, you have the option to hold that piece for later in exchange for the current held piece or the next piece if there is no held piece.
+
 A *Hard Drop* is a move that drops the piece to the location of it's shadow.
 
 ## SCORING MECHANICS:
