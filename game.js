@@ -310,6 +310,6 @@ class Game {
         while (this.currentPiece != null) {
             var y1 = this.moveDown();
         }
-        this.score += 2 * (y1 - y0);
+        this.score += 2 * (y1 - y0) * this.getLevel();
     }
 }
