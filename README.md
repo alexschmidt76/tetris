@@ -16,7 +16,7 @@ With each new piece that comes, you have the option to hold that piece for later
 A *Hard Drop* is a move that drops the piece to the location of it's shadow.
 
 ## SCORING MECHANICS:
-- **All points are multiplied by current level**
+**All points are multiplied by current level**
 - One line cleared = 100 points
 - Two lines cleared = 300 points
 - Three lines cleared = 500 points
