@@ -156,7 +156,9 @@ class Game {
     }
 
     getSpeed() {
-        return 1000 - (this.getLevel() - 1 ) * 100;
+        if (this.getLevel() < 11) return 1000 - (this.getLevel() - 1 ) * 100;
+        else if (this.getLevel() >= 15)  return 50;
+        else return 100 - (this.getLevel() - 10) * 10;
     }
 
     // scoring 
