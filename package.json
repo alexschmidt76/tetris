@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "typescript": "^4.9.5"
+  },
+  "name": "tetris",
+  "description": "- Arrow Keys for Left, Right, and Down\r - 'Z' and 'X' to Rotate Counterclockwise and Clockwise respectively\r - 'C' to Hold a Piece\r - Up Arrow Key to Hard Drop\r - Press R to Restart\r - Press P to Pause",
+  "version": "1.0.0",
+  "main": "main.js",
+  "devDependencies": {},
+  "scripts": {
+    "build": "npx tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexschmidt76/tetris.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexschmidt76/tetris/issues"
+  },
+  "homepage": "https://github.com/alexschmidt76/tetris#readme"
+}
